@@ -8,18 +8,18 @@ import { Empty, ErrorState, Loading } from '../components/States'
 const steps = [
   {
     n: '1',
-    title: 'Join the server',
-    body: 'Everything starts in Discord. Read the rules, grab your roles and say hello.',
+    title: 'انضم إلى السيرفر',
+    body: 'كل شيء يبدأ في ديسكورد. اقرأ القوانين، واحصل على رتبك، وألقِ التحية.',
   },
   {
     n: '2',
-    title: 'Verify your MLBB account',
-    body: 'Enter your player ID and server, then type the code we send to your in-game inbox.',
+    title: 'وثّق حساب MLBB الخاص بك',
+    body: 'أدخل معرّف اللاعب والسيرفر، ثم اكتب الرمز الذي نرسله إلى صندوق بريدك داخل اللعبة.',
   },
   {
     n: '3',
-    title: 'Register a squad',
-    body: 'Create or join a squad, then sign it up for any open bracket.',
+    title: 'سجّل فريقاً',
+    body: 'أنشئ فريقاً أو انضم إلى واحد، ثم سجّله في أي بطولة مفتوحة.',
   },
 ]
 
@@ -39,44 +39,44 @@ export default function Home() {
     <div className="space-y-20">
       <section className="grid gap-10 pt-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-brand-300">
-            Mobile Legends: Bang Bang · Community tournaments
+          <p className="text-xs font-medium text-brand-300">
+            Mobile Legends: Bang Bang · بطولات مجتمعية
           </p>
-          <h1 className="h1 mt-4 max-w-xl">Competitive MLBB, run properly.</h1>
+          <h1 className="h1 mt-4 max-w-xl">منافسات MLBB تنافسية، تُدار كما يجب.</h1>
           <p className="muted mt-5 max-w-lg text-base">{site.blurb}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-primary">
-              Join the Discord
+              انضم إلى ديسكورد
             </a>
             <Link to="/tournaments" className="btn-ghost">
-              See tournaments
+              تصفّح البطولات
             </Link>
           </div>
         </div>
 
         <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.08]">
-          <Stat label="Members" value={site.discord.members.toLocaleString()} />
-          <Stat label="Online now" value={site.discord.online.toLocaleString()} />
-          <Stat label="Game" value="MLBB" />
+          <Stat label="الأعضاء" value={site.discord.members.toLocaleString('ar-EG')} />
+          <Stat label="متصلون الآن" value={site.discord.online.toLocaleString('ar-EG')} />
+          <Stat label="اللعبة" value="MLBB" />
         </dl>
       </section>
 
       <section>
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <h2 className="h2">Open for sign-ups</h2>
-            <p className="muted mt-1">Brackets are seeded and run by Nexsus staff inside the server.</p>
+            <h2 className="h2">التسجيل مفتوح</h2>
+            <p className="muted mt-1">الجداول يُعدّها ويديرها طاقم Nexsus داخل السيرفر.</p>
           </div>
           <Link to="/tournaments" className="shrink-0 text-sm font-medium text-brand-300 hover:text-brand-200">
-            All tournaments →
+            كل البطولات ←
           </Link>
         </div>
 
-        {loading && <Loading label="Loading tournaments…" />}
+        {loading && <Loading label="جارٍ تحميل البطولات…" />}
         {error && <ErrorState message={error} />}
         {data && data.length === 0 && (
-          <Empty title="No open brackets right now">
-            New cups are announced in the server every couple of weeks.
+          <Empty title="لا توجد بطولات مفتوحة حالياً">
+            تُعلَن الكؤوس الجديدة في السيرفر كل أسبوعين تقريباً.
           </Empty>
         )}
         {data && data.length > 0 && (
@@ -89,11 +89,11 @@ export default function Home() {
       </section>
 
       <section>
-        <h2 className="h2">How to play your first match</h2>
+        <h2 className="h2">كيف تلعب مباراتك الأولى</h2>
         <ol className="mt-6 grid gap-8 border-t border-white/[0.08] pt-6 md:grid-cols-3">
           {steps.map((s) => (
             <li key={s.n}>
-              <p className="font-display text-sm font-semibold text-brand-300">Step {s.n}</p>
+              <p className="font-display text-sm font-semibold text-brand-300">الخطوة {s.n}</p>
               <h3 className="mt-2 text-base font-semibold text-white">{s.title}</h3>
               <p className="muted mt-1.5">{s.body}</p>
             </li>
@@ -103,27 +103,27 @@ export default function Home() {
 
       <section className="card grid overflow-hidden md:grid-cols-2">
         <div className="p-7 sm:p-8">
-          <h2 className="h2">Matches happen in Discord</h2>
+          <h2 className="h2">المباريات تُقام في ديسكورد</h2>
           <p className="muted mt-3">
-            This site handles sign-ups and rosters. Lobbies, pairings, disputes and results all run through
-            the Nexsus server.
+            هذا الموقع مخصص للتسجيل وإدارة التشكيلات. أما اللوبيات والمواجهات والنزاعات والنتائج فكلها تُدار عبر
+            سيرفر Nexsus.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-primary">
-              Open invite
+              افتح رابط الدعوة
             </a>
             <Link to="/community" className="btn-ghost">
-              What is inside
+              ماذا يوجد داخل السيرفر
             </Link>
           </div>
         </div>
 
-        <ul className="divide-y divide-white/[0.08] border-t border-white/[0.08] md:border-l md:border-t-0">
+        <ul className="divide-y divide-white/[0.08] border-t border-white/[0.08] md:border-r md:border-t-0">
           {site.channels.slice(0, 4).map((c) => (
             <li key={c.name} className="flex gap-3 px-7 py-4 sm:px-8">
               <span className="text-slate-600">#</span>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-white">{c.name}</p>
+                <p className="text-sm font-medium text-white" dir="ltr">{c.name}</p>
                 <p className="text-xs text-slate-400">{c.purpose}</p>
               </div>
             </li>

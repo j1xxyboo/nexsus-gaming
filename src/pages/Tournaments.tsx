@@ -7,11 +7,11 @@ import SectionHeading from '../components/SectionHeading'
 import { Empty, ErrorState, Loading } from '../components/States'
 
 const filters: { key: TournamentStatus | 'all'; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'registration_open', label: 'Sign-ups open' },
-  { key: 'ongoing', label: 'Live' },
-  { key: 'registration_closed', label: 'Closed' },
-  { key: 'completed', label: 'Finished' },
+  { key: 'all', label: 'الكل' },
+  { key: 'registration_open', label: 'التسجيل مفتوح' },
+  { key: 'ongoing', label: 'جارية' },
+  { key: 'registration_closed', label: 'مغلقة' },
+  { key: 'completed', label: 'منتهية' },
 ]
 
 export default function Tournaments() {
@@ -30,9 +30,8 @@ export default function Tournaments() {
 
   return (
     <div>
-      <SectionHeading eyebrow="Competition" title="Tournaments">
-        Open cups, invitationals and the seasonal finale. Pick a bracket, check the ruleset, then register
-        your squad.
+      <SectionHeading eyebrow="المنافسة" title="البطولات">
+        كؤوس مفتوحة، وبطولات بالدعوة، والنهائي الموسمي. اختر بطولة، واطّلع على القوانين، ثم سجّل فريقك.
       </SectionHeading>
 
       <div className="card mb-6 flex flex-col gap-4 p-4 lg:flex-row lg:items-center">
@@ -42,7 +41,7 @@ export default function Tournaments() {
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
+              className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                 filter === f.key
                   ? 'bg-brand-600 text-white shadow-glow'
                   : 'border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'
@@ -56,16 +55,16 @@ export default function Tournaments() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name, mode or region…"
-          className="field lg:ml-auto lg:max-w-xs"
+          placeholder="ابحث بالاسم أو النمط أو المنطقة…"
+          className="field lg:mr-auto lg:max-w-xs"
         />
       </div>
 
-      {loading && <Loading label="Loading tournaments…" />}
+      {loading && <Loading label="جارٍ تحميل البطولات…" />}
       {error && <ErrorState message={error} />}
       {data && list.length === 0 && (
-        <Empty title="Nothing matches that">
-          Try another filter, or watch the announcements channel — new cups are posted every couple of weeks.
+        <Empty title="لا توجد نتائج مطابقة">
+          جرّب فلتراً آخر، أو تابع قناة الإعلانات — تُنشر كؤوس جديدة كل أسبوعين تقريباً.
         </Empty>
       )}
       {list.length > 0 && (

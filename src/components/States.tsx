@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export function Loading({ label = 'Loading…' }: { label?: string }) {
+export function Loading({ label = 'جارٍ التحميل…' }: { label?: string }) {
   return (
     <div className="card flex items-center gap-3 p-8">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
@@ -12,7 +12,7 @@ export function Loading({ label = 'Loading…' }: { label?: string }) {
 export function ErrorState({ message }: { message: string }) {
   return (
     <div className="card border-crimson-600/40 p-8">
-      <p className="font-display text-xl tracking-wide text-white">Could not load that</p>
+      <p className="font-display text-xl tracking-wide text-white">تعذّر تحميل المحتوى</p>
       <p className="muted mt-2">{message}</p>
     </div>
   )
