@@ -4,14 +4,14 @@ export const site = {
   tagline: 'Compete. Climb. Belong.',
   blurb:
     'Nexsus Gaming is the tournament arm of the Nexsus Discord community. We run open brackets, scrim nights and seasonal cups — everything is organised in the server.',
-  discordInvite: 'https://discord.gg/nexsus',
+  discordInvite: 'https://discord.gg/thenexus',
   discord: {
     members: 12480,
     online: 1937,
     boosts: 14,
   },
   socials: [
-    { label: 'Discord', href: 'https://discord.gg/nexsus' },
+    { label: 'Discord', href: 'https://discord.gg/thenexus' },
     { label: 'X', href: 'https://x.com/nexsusgg' },
     { label: 'YouTube', href: 'https://youtube.com/@nexsusgg' },
     { label: 'TikTok', href: 'https://tiktok.com/@nexsusgg' },
