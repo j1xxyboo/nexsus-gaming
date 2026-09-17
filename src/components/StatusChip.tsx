@@ -1,4 +1,4 @@
-import { statusMeta, type TournamentStatus } from '../data/tournaments'
+import { statusMeta, type TournamentStatus } from '../lib/types'
 
 export default function StatusChip({ status }: { status: TournamentStatus }) {
   const meta = statusMeta[status]
@@ -13,7 +13,9 @@ export default function StatusChip({ status }: { status: TournamentStatus }) {
 
   return (
     <span className={cls}>
-      {status === 'live' && <span className="h-1.5 w-1.5 animate-pulseDot rounded-full bg-crimson-500" />}
+      {status === 'ongoing' && (
+        <span className="h-1.5 w-1.5 animate-pulseDot rounded-full bg-crimson-500" />
+      )}
       {meta.label}
     </span>
   )

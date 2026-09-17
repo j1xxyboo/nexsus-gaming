@@ -1,32 +1,57 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { findTournament } from '../data/tournaments'
+import { fetchMatches, fetchMyTeam, fetchRegistrations, fetchTournamentBySlug, registerTeam } from '../lib/queries'
+import { useAsync } from '../lib/useAsync'
+import { formatLabels } from '../lib/types'
+import { useAuth } from '../lib/auth'
 import { site } from '../data/site'
 import StatusChip from '../components/StatusChip'
+import { Empty, ErrorState, Loading } from '../components/States'
 
 export default function TournamentDetail() {
   const { slug } = useParams()
-  const t = findTournament(slug)
+  const { session, profile } = useAuth()
+  const { data: t, error, loading, reload } = useAsync(() => fetchTournamentBySlug(slug!), [slug])
+  const { data: regs } = useAsync(async () => (t ? fetchRegistrations(t.id) : []), [t?.id])
+  const { data: matches } = useAsync(async () => (t ? fetchMatches(t.id) : []), [t?.id])
+  const { data: mine } = useAsync(async () => (profile ? fetchMyTeam(profile.id) : null), [profile?.id])
 
-  if (!t) {
+  const [busy, setBusy] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
+
+  if (loading) return <Loading label="Loading tournament…" />
+  if (error) return <ErrorState message={error} />
+  if (!t)
     return (
-      <div className="card p-10 text-center">
-        <p className="font-display text-3xl tracking-wide text-white">Tournament not found</p>
-        <p className="muted mx-auto mt-2 max-w-md">
-          That bracket may have been archived. The current list is on the tournaments page.
-        </p>
-        <Link to="/tournaments" className="btn-primary mt-6">
-          Back to tournaments
-        </Link>
-      </div>
+      <Empty title="Tournament not found">
+        That bracket may have been archived. <Link to="/tournaments" className="text-brand-300">See the current list.</Link>
+      </Empty>
     )
-  }
 
-  const pct = Math.min(100, Math.round((t.registered / t.slots) * 100))
-  const closed = t.status === 'finished' || t.registered >= t.slots
-  const starts = new Date(t.startsAt).toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  })
+  const registered = t.registration_count ?? 0
+  const pct = Math.min(100, Math.round((registered / t.max_teams) * 100))
+  const isOpen = t.status === 'registration_open' && registered < t.max_teams
+  const alreadyIn = !!regs?.some((r) => r.team_id === mine?.team.id)
+  const canRegister = isOpen && mine?.myRole === 'leader' && !alreadyIn
+  const starts = t.starts_at
+    ? new Date(t.starts_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    : 'TBA'
+  const rules = (t.rules ?? '').split('\n').map((r) => r.trim()).filter(Boolean)
+
+  async function handleRegister() {
+    if (!mine) return
+    setBusy(true)
+    setNotice(null)
+    try {
+      await registerTeam(t!.id, mine.team.id)
+      setNotice('Squad submitted — staff will confirm your slot in the server.')
+      await reload()
+    } catch (err) {
+      setNotice(err instanceof Error ? err.message : 'Could not register that squad.')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -40,58 +65,101 @@ export default function TournamentDetail() {
           <div className="flex flex-wrap items-center gap-2">
             <StatusChip status={t.status} />
             <span className="chip">{t.mode}</span>
-            <span className="chip">{t.region}</span>
-            <span className="chip">#{t.channel}</span>
+            {t.region && <span className="chip">{t.region}</span>}
+            {t.discord_channel && <span className="chip">#{t.discord_channel}</span>}
           </div>
 
-          <h1 className="h1 mt-4">{t.name}</h1>
-          <p className="mt-1 text-base font-semibold text-brand-300">{t.game}</p>
-          <p className="muted mt-4 max-w-2xl text-base">{t.summary}</p>
+          <h1 className="h1 mt-4">{t.title}</h1>
+          <p className="mt-1 text-base font-semibold text-brand-300">Mobile Legends: Bang Bang</p>
+          {t.summary && <p className="muted mt-4 max-w-2xl text-base">{t.summary}</p>}
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href={site.discordInvite}
-              target="_blank"
-              rel="noreferrer"
-              className={closed ? 'btn-ghost' : 'btn-primary'}
-            >
-              {closed ? 'Watch in the server' : 'Register in Discord'}
+            {canRegister && (
+              <button type="button" onClick={handleRegister} disabled={busy} className="btn-primary disabled:opacity-60">
+                {busy ? 'Submitting…' : `Register ${mine!.team.name}`}
+              </button>
+            )}
+            {alreadyIn && <span className="chip-purple">Your squad is registered</span>}
+            {!session && isOpen && (
+              <Link to="/auth" className="btn-primary">
+                Sign in to register
+              </Link>
+            )}
+            {session && isOpen && !mine && (
+              <Link to="/squad" className="btn-primary">
+                Create a squad first
+              </Link>
+            )}
+            <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-ghost">
+              Open the server
             </a>
-            <Link to="/join" className="btn-ghost">
-              Need a squad?
-            </Link>
           </div>
+
+          {notice && <p className="mt-4 text-sm text-brand-200">{notice}</p>}
         </div>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">
-          <section className="card p-6">
-            <h2 className="h2">Ruleset</h2>
-            <ul className="mt-4 space-y-3">
-              {t.rules.map((r) => (
-                <li key={r} className="flex gap-3 text-sm text-slate-300">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson-500" />
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {rules.length > 0 && (
+            <section className="card p-6">
+              <h2 className="h2">Ruleset</h2>
+              <ul className="mt-4 space-y-3">
+                {rules.map((r) => (
+                  <li key={r} className="flex gap-3 text-sm text-slate-300">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson-500" />
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <section className="card p-6">
-            <h2 className="h2">Schedule</h2>
-            <ol className="mt-4 space-y-0">
-              {t.schedule.map((s, i) => (
-                <li key={s.round} className="flex gap-4 border-b border-white/5 py-3 last:border-0">
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-600/30 text-xs font-bold text-brand-100">
-                    {i + 1}
-                  </span>
-                  <span className="text-sm font-semibold text-white">{s.round}</span>
-                  <span className="ml-auto text-sm text-slate-400">{s.when}</span>
-                </li>
-              ))}
-            </ol>
+            <h2 className="h2">Registered squads</h2>
+            {!regs || regs.length === 0 ? (
+              <p className="muted mt-3">No squads yet — be the first in.</p>
+            ) : (
+              <ul className="mt-4 divide-y divide-white/5">
+                {regs.map((r) => (
+                  <li key={r.id} className="flex items-center gap-3 py-3">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-crimson-600 text-xs font-bold text-white">
+                      {r.team?.tag ?? '—'}
+                    </span>
+                    <span className="truncate font-semibold text-white">{r.team?.name ?? 'Unknown squad'}</span>
+                    <span className="ml-auto shrink-0 text-xs uppercase tracking-wide text-slate-400">
+                      {r.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
+
+          {matches && matches.length > 0 && (
+            <section className="card p-6">
+              <h2 className="h2">Bracket</h2>
+              <ul className="mt-4 divide-y divide-white/5">
+                {matches.map((m) => (
+                  <li key={m.id} className="flex items-center gap-3 py-3 text-sm">
+                    <span className="chip shrink-0">R{m.round}</span>
+                    <span className="truncate text-slate-300">
+                      {regs?.find((r) => r.team_id === m.team_a_id)?.team?.name ?? 'TBD'}
+                    </span>
+                    <span className="shrink-0 font-bold text-white">
+                      {m.score_a} – {m.score_b}
+                    </span>
+                    <span className="truncate text-slate-300">
+                      {regs?.find((r) => r.team_id === m.team_b_id)?.team?.name ?? 'TBD'}
+                    </span>
+                    <span className="ml-auto shrink-0 text-xs uppercase tracking-wide text-slate-500">
+                      Bo{m.best_of}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <aside className="space-y-6">
@@ -99,11 +167,11 @@ export default function TournamentDetail() {
             <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500">At a glance</h2>
             <dl className="mt-4 space-y-3 text-sm">
               {[
-                ['Prize pool', t.prize],
-                ['Entry', t.entry],
-                ['Format', t.format],
+                ['Prize pool', t.prize_pool ?? 'TBA'],
+                ['Entry', t.entry_fee ?? 'Free'],
+                ['Format', formatLabels[t.format]],
                 ['Starts', starts],
-                ['Slots', `${t.registered} of ${t.slots}`],
+                ['Squads', `${registered} of ${t.max_teams}`],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0">
                   <dt className="text-slate-400">{k}</dt>
@@ -120,7 +188,7 @@ export default function TournamentDetail() {
                 />
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                {pct >= 100 ? 'Bracket full' : `${t.slots - t.registered} slots left`}
+                {pct >= 100 ? 'Bracket full' : `${t.max_teams - registered} slots left`}
               </p>
             </div>
           </section>
@@ -128,8 +196,9 @@ export default function TournamentDetail() {
           <section className="card p-6">
             <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500">Where it runs</h2>
             <p className="muted mt-3">
-              Pairings drop in <span className="font-semibold text-brand-300">#{t.channel}</span>, results go
-              to <span className="font-semibold text-brand-300">#match-results</span>, and disputes open a
+              Pairings drop in{' '}
+              <span className="font-semibold text-brand-300">#{t.discord_channel ?? 'tournaments'}</span>, results
+              go to <span className="font-semibold text-brand-300">#match-results</span>, and disputes open a
               ticket in <span className="font-semibold text-brand-300">#support-tickets</span>.
             </p>
             <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-red mt-5 w-full">

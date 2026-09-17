@@ -1,20 +1,23 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { teams } from '../data/teams'
+import { fetchTeams } from '../lib/queries'
+import { useAsync } from '../lib/useAsync'
 import SectionHeading from '../components/SectionHeading'
+import { Empty, ErrorState, Loading } from '../components/States'
 
 export default function Teams() {
+  const { data, error, loading } = useAsync(fetchTeams, [])
   const [onlyRecruiting, setOnlyRecruiting] = useState(false)
   const [query, setQuery] = useState('')
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return teams.filter((t) => {
+    return (data ?? []).filter((t) => {
       const byRecruit = !onlyRecruiting || t.recruiting
-      const byQuery = !q || `${t.name} ${t.tag} ${t.game} ${t.captain}`.toLowerCase().includes(q)
+      const byQuery = !q || `${t.name} ${t.tag}`.toLowerCase().includes(q)
       return byRecruit && byQuery
     })
-  }, [onlyRecruiting, query])
+  }, [data, onlyRecruiting, query])
 
   return (
     <div>
@@ -23,11 +26,11 @@ export default function Teams() {
         title="Squads"
         action={
           <Link to="/join" className="btn-primary">
-            Post yourself as a free agent
+            Join a squad
           </Link>
         }
       >
-        Every squad registered for a Nexsus bracket. Captains are reachable by their server handle.
+        Every approved Nexsus squad. Captains are reachable by their server handle.
       </SectionHeading>
 
       <div className="card mb-6 flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
@@ -46,44 +49,53 @@ export default function Teams() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search squads, tags or captains…"
+          placeholder="Search squads or tags…"
           className="field sm:ml-auto sm:max-w-xs"
         />
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {list.map((t) => (
-          <article key={t.tag} className="card card-hover p-6">
-            <div className="flex items-start gap-4">
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-crimson-600 font-display text-lg tracking-wider text-white">
-                {t.tag}
+      {loading && <Loading label="Loading squads…" />}
+      {error && <ErrorState message={error} />}
+      {data && list.length === 0 && (
+        <Empty title="No squads to show">
+          Once staff approve a squad it appears here. Create yours from the my-squad page.
+        </Empty>
+      )}
+      {list.length > 0 && (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {list.map((t) => (
+            <article key={t.id} className="card card-hover p-6">
+              <div className="flex items-start gap-4">
+                {t.logo_url ? (
+                  <img src={t.logo_url} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+                ) : (
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-crimson-600 font-display text-lg tracking-wider text-white">
+                    {t.tag}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <h3 className="truncate font-display text-xl tracking-wide text-white">{t.name}</h3>
+                  <p className="truncate text-sm text-brand-300">[{t.tag}]</p>
+                </div>
+                {t.recruiting && <span className="chip-red ml-auto shrink-0">Recruiting</span>}
               </div>
-              <div className="min-w-0">
-                <h3 className="truncate font-display text-xl tracking-wide text-white">{t.name}</h3>
-                <p className="truncate text-sm text-brand-300">{t.game}</p>
-              </div>
-              {t.recruiting && <span className="chip-red ml-auto shrink-0">Recruiting</span>}
-            </div>
 
-            <p className="muted mt-4">{t.bio}</p>
+              {t.bio && <p className="muted mt-4">{t.bio}</p>}
 
-            <dl className="mt-5 space-y-2 text-sm">
-              <div className="flex gap-4">
-                <dt className="text-slate-400">Captain</dt>
-                <dd className="ml-auto font-semibold text-white">{t.captain}</dd>
-              </div>
-              <div className="flex gap-4">
-                <dt className="text-slate-400">Roster</dt>
-                <dd className="ml-auto font-semibold text-white">{t.members} players</dd>
-              </div>
-              <div className="flex gap-4">
-                <dt className="text-slate-400">Looking for</dt>
-                <dd className="ml-auto text-right font-semibold text-white">{t.looking}</dd>
-              </div>
-            </dl>
-          </article>
-        ))}
-      </div>
+              <dl className="mt-5 space-y-2 text-sm">
+                <div className="flex gap-4">
+                  <dt className="text-slate-400">Roster</dt>
+                  <dd className="ml-auto font-semibold text-white">{t.member_count} players</dd>
+                </div>
+                <div className="flex gap-4">
+                  <dt className="text-slate-400">Looking for</dt>
+                  <dd className="ml-auto text-right font-semibold text-white">{t.looking_for ?? '—'}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
