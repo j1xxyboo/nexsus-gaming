@@ -5,11 +5,11 @@ import { useAuth } from '../lib/auth'
 import Logo from './Logo'
 
 const links = [
-  { to: '/tournaments', label: 'Tournaments' },
-  { to: '/teams', label: 'Squads' },
-  { to: '/join', label: 'Find a squad' },
-  { to: '/community', label: 'Community' },
-  { to: '/staff', label: 'Staff' },
+  { to: '/tournaments', label: 'البطولات' },
+  { to: '/teams', label: 'الفرق' },
+  { to: '/join', label: 'ابحث عن فريق' },
+  { to: '/community', label: 'المجتمع' },
+  { to: '/staff', label: 'الطاقم' },
 ]
 
 function DiscordIcon() {
@@ -29,7 +29,7 @@ export default function Topbar() {
     setOpen(false)
   }, [pathname])
 
-  const name = profile?.ign ?? profile?.display_name ?? 'Account'
+  const name = profile?.ign ?? profile?.display_name ?? 'الحساب'
   const initials = name.slice(0, 2).toUpperCase()
 
   return (
@@ -52,7 +52,7 @@ export default function Topbar() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="mr-auto flex items-center gap-2">
           <a
             href={site.discordInvite}
             target="_blank"
@@ -60,13 +60,13 @@ export default function Topbar() {
             className="btn-ghost hidden h-9 px-3 sm:inline-flex"
           >
             <DiscordIcon />
-            Discord
+            ديسكورد
           </a>
 
           {session ? (
             <Link
               to="/profile"
-              className="flex h-9 items-center gap-2 rounded-md border border-white/10 pl-1 pr-3 text-sm text-slate-200 transition-colors hover:bg-white/5"
+              className="flex h-9 items-center gap-2 rounded-md border border-white/10 pr-1 pl-3 text-sm text-slate-200 transition-colors hover:bg-white/5"
             >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="h-7 w-7 rounded object-cover" />
@@ -79,7 +79,7 @@ export default function Topbar() {
             </Link>
           ) : (
             <Link to="/auth" className="btn-primary h-9 px-3">
-              Sign in
+              تسجيل الدخول
             </Link>
           )}
 
@@ -87,7 +87,7 @@ export default function Topbar() {
             type="button"
             onClick={() => setOpen((v) => !v)}
             className="grid h-9 w-9 place-items-center rounded-md border border-white/10 text-slate-200 md:hidden"
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? 'إغلاق القائمة' : 'فتح القائمة'}
             aria-expanded={open}
           >
             <span className="relative block h-3.5 w-4">
@@ -103,7 +103,7 @@ export default function Topbar() {
         <div className="border-t border-white/[0.08] bg-ink-950 md:hidden">
           <nav className="mx-auto flex w-full max-w-6xl flex-col px-5 py-3 sm:px-8">
             <NavLink to="/" end className={({ isActive }) => `nav-link py-2.5 ${isActive ? 'nav-link-active' : ''}`}>
-              Home
+              الرئيسية
             </NavLink>
             {links.map((l) => (
               <NavLink
@@ -116,7 +116,7 @@ export default function Topbar() {
             ))}
             {session && (
               <NavLink to="/profile" className={({ isActive }) => `nav-link py-2.5 ${isActive ? 'nav-link-active' : ''}`}>
-                Profile
+                الملف الشخصي
               </NavLink>
             )}
             <a
@@ -126,7 +126,7 @@ export default function Topbar() {
               className="nav-link flex items-center gap-2 py-2.5"
             >
               <DiscordIcon />
-              Discord server
+              سيرفر ديسكورد
             </a>
           </nav>
         </div>

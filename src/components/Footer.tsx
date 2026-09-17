@@ -3,11 +3,11 @@ import { site } from '../data/site'
 import Logo from './Logo'
 
 const pages = [
-  { to: '/tournaments', label: 'Tournaments' },
-  { to: '/teams', label: 'Squads' },
-  { to: '/join', label: 'Find a squad' },
-  { to: '/community', label: 'Community' },
-  { to: '/staff', label: 'Staff applications' },
+  { to: '/tournaments', label: 'البطولات' },
+  { to: '/teams', label: 'الفرق' },
+  { to: '/join', label: 'ابحث عن فريق' },
+  { to: '/community', label: 'المجتمع' },
+  { to: '/staff', label: 'طلبات الانضمام للطاقم' },
 ]
 
 export default function Footer() {
@@ -40,7 +40,7 @@ export default function Footer() {
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-5 pb-8 text-xs text-slate-500 sm:px-8">
-        © {new Date().getFullYear()} {site.name}. A community project, not affiliated with any game publisher.
+        © {new Date().getFullYear()} {site.name}. مشروع مجتمعي، غير تابع لأي ناشر ألعاب.
       </div>
     </footer>
   )

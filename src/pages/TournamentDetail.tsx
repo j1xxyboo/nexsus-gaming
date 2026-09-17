@@ -19,12 +19,12 @@ export default function TournamentDetail() {
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
 
-  if (loading) return <Loading label="Loading tournament…" />
+  if (loading) return <Loading label="جارٍ تحميل البطولة…" />
   if (error) return <ErrorState message={error} />
   if (!t)
     return (
-      <Empty title="Tournament not found">
-        That bracket may have been archived. <Link to="/tournaments" className="text-brand-300">See the current list.</Link>
+      <Empty title="البطولة غير موجودة">
+        ربما تمت أرشفة هذه البطولة. <Link to="/tournaments" className="text-brand-300">اطّلع على القائمة الحالية.</Link>
       </Empty>
     )
 
@@ -34,8 +34,8 @@ export default function TournamentDetail() {
   const alreadyIn = !!regs?.some((r) => r.team_id === mine?.team.id)
   const canRegister = isOpen && mine?.myRole === 'leader' && !alreadyIn
   const starts = t.starts_at
-    ? new Date(t.starts_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
-    : 'TBA'
+    ? new Date(t.starts_at).toLocaleString('ar', { dateStyle: 'medium', timeStyle: 'short' })
+    : 'يُعلن لاحقاً'
   const rules = (t.rules ?? '').split('\n').map((r) => r.trim()).filter(Boolean)
 
   async function handleRegister() {
@@ -44,10 +44,10 @@ export default function TournamentDetail() {
     setNotice(null)
     try {
       await registerTeam(t!.id, mine.team.id)
-      setNotice('Squad submitted — staff will confirm your slot in the server.')
+      setNotice('تم إرسال طلب الفريق — سيؤكد الطاقم مقعدكم في السيرفر.')
       await reload()
     } catch (err) {
-      setNotice(err instanceof Error ? err.message : 'Could not register that squad.')
+      setNotice(err instanceof Error ? err.message : 'تعذّر تسجيل هذا الفريق.')
     } finally {
       setBusy(false)
     }
@@ -56,17 +56,17 @@ export default function TournamentDetail() {
   return (
     <div className="space-y-8">
       <Link to="/tournaments" className="text-sm font-semibold text-brand-300 hover:text-brand-200">
-        ← All tournaments
+        → كل البطولات
       </Link>
 
       <header className="card relative overflow-hidden p-8">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-600/25 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-brand-600/25 blur-3xl" />
         <div className="relative">
           <div className="flex flex-wrap items-center gap-2">
             <StatusChip status={t.status} />
             <span className="chip">{t.mode}</span>
             {t.region && <span className="chip">{t.region}</span>}
-            {t.discord_channel && <span className="chip">#{t.discord_channel}</span>}
+            {t.discord_channel && <span className="chip" dir="ltr">#{t.discord_channel}</span>}
           </div>
 
           <h1 className="h1 mt-4">{t.title}</h1>
@@ -76,22 +76,22 @@ export default function TournamentDetail() {
           <div className="mt-7 flex flex-wrap gap-3">
             {canRegister && (
               <button type="button" onClick={handleRegister} disabled={busy} className="btn-primary disabled:opacity-60">
-                {busy ? 'Submitting…' : `Register ${mine!.team.name}`}
+                {busy ? 'جارٍ الإرسال…' : `سجّل ${mine!.team.name}`}
               </button>
             )}
-            {alreadyIn && <span className="chip-purple">Your squad is registered</span>}
+            {alreadyIn && <span className="chip-purple">فريقك مسجّل</span>}
             {!session && isOpen && (
               <Link to="/auth" className="btn-primary">
-                Sign in to register
+                سجّل الدخول للتسجيل
               </Link>
             )}
             {session && isOpen && !mine && (
               <Link to="/squad" className="btn-primary">
-                Create a squad first
+                أنشئ فريقاً أولاً
               </Link>
             )}
             <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-ghost">
-              Open the server
+              افتح السيرفر
             </a>
           </div>
 
@@ -103,7 +103,7 @@ export default function TournamentDetail() {
         <div className="space-y-6">
           {rules.length > 0 && (
             <section className="card p-6">
-              <h2 className="h2">Ruleset</h2>
+              <h2 className="h2">القوانين</h2>
               <ul className="mt-4 space-y-3">
                 {rules.map((r) => (
                   <li key={r} className="flex gap-3 text-sm text-slate-300">
@@ -116,9 +116,9 @@ export default function TournamentDetail() {
           )}
 
           <section className="card p-6">
-            <h2 className="h2">Registered squads</h2>
+            <h2 className="h2">الفرق المسجّلة</h2>
             {!regs || regs.length === 0 ? (
-              <p className="muted mt-3">No squads yet — be the first in.</p>
+              <p className="muted mt-3">لا توجد فرق بعد — كن أول المسجّلين.</p>
             ) : (
               <ul className="mt-4 divide-y divide-white/5">
                 {regs.map((r) => (
@@ -126,8 +126,8 @@ export default function TournamentDetail() {
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-crimson-600 text-xs font-bold text-white">
                       {r.team?.tag ?? '—'}
                     </span>
-                    <span className="truncate font-semibold text-white">{r.team?.name ?? 'Unknown squad'}</span>
-                    <span className="ml-auto shrink-0 text-xs uppercase tracking-wide text-slate-400">
+                    <span className="truncate font-semibold text-white">{r.team?.name ?? 'فريق غير معروف'}</span>
+                    <span className="mr-auto shrink-0 text-xs uppercase tracking-wide text-slate-400">
                       {r.status}
                     </span>
                   </li>
@@ -138,22 +138,22 @@ export default function TournamentDetail() {
 
           {matches && matches.length > 0 && (
             <section className="card p-6">
-              <h2 className="h2">Bracket</h2>
+              <h2 className="h2">جدول المباريات</h2>
               <ul className="mt-4 divide-y divide-white/5">
                 {matches.map((m) => (
                   <li key={m.id} className="flex items-center gap-3 py-3 text-sm">
-                    <span className="chip shrink-0">R{m.round}</span>
+                    <span className="chip shrink-0">الجولة {m.round}</span>
                     <span className="truncate text-slate-300">
-                      {regs?.find((r) => r.team_id === m.team_a_id)?.team?.name ?? 'TBD'}
+                      {regs?.find((r) => r.team_id === m.team_a_id)?.team?.name ?? 'لم يُحدد'}
                     </span>
-                    <span className="shrink-0 font-bold text-white">
+                    <span className="shrink-0 font-bold text-white" dir="ltr">
                       {m.score_a} – {m.score_b}
                     </span>
                     <span className="truncate text-slate-300">
-                      {regs?.find((r) => r.team_id === m.team_b_id)?.team?.name ?? 'TBD'}
+                      {regs?.find((r) => r.team_id === m.team_b_id)?.team?.name ?? 'لم يُحدد'}
                     </span>
-                    <span className="ml-auto shrink-0 text-xs uppercase tracking-wide text-slate-500">
-                      Bo{m.best_of}
+                    <span className="mr-auto shrink-0 text-xs text-slate-500">
+                      أفضل من {m.best_of}
                     </span>
                   </li>
                 ))}
@@ -164,18 +164,18 @@ export default function TournamentDetail() {
 
         <aside className="space-y-6">
           <section className="card p-6">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500">At a glance</h2>
+            <h2 className="text-xs font-bold text-slate-500">نظرة سريعة</h2>
             <dl className="mt-4 space-y-3 text-sm">
               {[
-                ['Prize pool', t.prize_pool ?? 'TBA'],
-                ['Entry', t.entry_fee ?? 'Free'],
-                ['Format', formatLabels[t.format]],
-                ['Starts', starts],
-                ['Squads', `${registered} of ${t.max_teams}`],
+                ['مجموع الجوائز', t.prize_pool ?? 'يُعلن لاحقاً'],
+                ['رسوم الدخول', t.entry_fee ?? 'مجاني'],
+                ['النظام', formatLabels[t.format]],
+                ['تبدأ في', starts],
+                ['الفرق', `${registered} من ${t.max_teams}`],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0">
                   <dt className="text-slate-400">{k}</dt>
-                  <dd className="ml-auto text-right font-semibold text-white">{v}</dd>
+                  <dd className="mr-auto text-left font-semibold text-white">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -188,21 +188,21 @@ export default function TournamentDetail() {
                 />
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                {pct >= 100 ? 'Bracket full' : `${t.max_teams - registered} slots left`}
+                {pct >= 100 ? 'الجدول مكتمل' : `متبقٍ ${t.max_teams - registered} مقعد`}
               </p>
             </div>
           </section>
 
           <section className="card p-6">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500">Where it runs</h2>
+            <h2 className="text-xs font-bold text-slate-500">أين تُقام</h2>
             <p className="muted mt-3">
-              Pairings drop in{' '}
-              <span className="font-semibold text-brand-300">#{t.discord_channel ?? 'tournaments'}</span>, results
-              go to <span className="font-semibold text-brand-300">#match-results</span>, and disputes open a
-              ticket in <span className="font-semibold text-brand-300">#support-tickets</span>.
+              تُنشر المواجهات في{' '}
+              <span className="font-semibold text-brand-300" dir="ltr">#{t.discord_channel ?? 'tournaments'}</span>، وتُرسل النتائج
+              إلى <span className="font-semibold text-brand-300" dir="ltr">#match-results</span>، وتُفتح النزاعات عبر
+              تذكرة في <span className="font-semibold text-brand-300" dir="ltr">#support-tickets</span>.
             </p>
             <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-red mt-5 w-full">
-              Join the server
+              انضم إلى السيرفر
             </a>
           </section>
         </aside>

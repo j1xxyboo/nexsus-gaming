@@ -1,9 +1,9 @@
 export const site = {
   name: 'Nexsus Gaming',
   tag: 'Nexsus',
-  tagline: 'Compete. Climb. Belong.',
+  tagline: 'نافس. تقدّم. انتمِ.',
   blurb:
-    'Nexsus Gaming is the tournament arm of the Nexsus Discord community. We run open brackets, scrim nights and seasonal cups — everything is organised in the server.',
+    'Nexsus Gaming هو الذراع التنافسي لمجتمع Nexsus على ديسكورد. ننظّم بطولات مفتوحة، وليالي تدريب (سكريم)، وكؤوساً موسمية — وكل شيء يُدار داخل السيرفر.',
   discordInvite: 'https://discord.gg/thenexus',
   discord: {
     members: 12480,
@@ -11,24 +11,24 @@ export const site = {
     boosts: 14,
   },
   socials: [
-    { label: 'Discord', href: 'https://discord.gg/thenexus' },
+    { label: 'ديسكورد', href: 'https://discord.gg/thenexus' },
     { label: 'X', href: 'https://x.com/nexsusgg' },
-    { label: 'YouTube', href: 'https://youtube.com/@nexsusgg' },
-    { label: 'TikTok', href: 'https://tiktok.com/@nexsusgg' },
+    { label: 'يوتيوب', href: 'https://youtube.com/@nexsusgg' },
+    { label: 'تيك توك', href: 'https://tiktok.com/@nexsusgg' },
   ],
   channels: [
-    { name: 'announcements', purpose: 'Bracket drops, schedule changes, prize reveals.' },
-    { name: 'find-a-team', purpose: 'Free agents and captains matching up before sign-ups close.' },
-    { name: 'scrim-nights', purpose: 'Nightly practice lobbies hosted by staff.' },
-    { name: 'match-results', purpose: 'Screenshot your result, staff verify it.' },
-    { name: 'support-tickets', purpose: 'Disputes, no-shows and roster changes.' },
+    { name: 'announcements', purpose: 'إعلان الجداول، تغييرات المواعيد، والكشف عن الجوائز.' },
+    { name: 'find-a-team', purpose: 'اللاعبون الأحرار والقادة يتواصلون قبل إغلاق التسجيل.' },
+    { name: 'scrim-nights', purpose: 'لوبيات تدريب ليلية يستضيفها الطاقم.' },
+    { name: 'match-results', purpose: 'صوّر نتيجتك، والطاقم يتحقق منها.' },
+    { name: 'support-tickets', purpose: 'النزاعات، والغياب عن المباريات، وتغييرات التشكيلة.' },
   ],
   roles: [
-    { name: 'Founder', color: 'crimson' as const, desc: 'Runs Nexsus and signs off on every ruleset.' },
-    { name: 'Tournament Admin', color: 'purple' as const, desc: 'Seeds brackets, verifies results, handles disputes.' },
-    { name: 'Moderator', color: 'purple' as const, desc: 'Keeps the server clean and the lobbies on time.' },
-    { name: 'Caster', color: 'white' as const, desc: 'Streams the finals and does the post-game breakdown.' },
-    { name: 'Competitor', color: 'purple' as const, desc: 'Anyone signed to a squad for an active cup.' },
+    { name: 'المؤسس', color: 'crimson' as const, desc: 'يدير Nexsus ويعتمد كل لائحة قوانين.' },
+    { name: 'مشرف البطولات', color: 'purple' as const, desc: 'يوزّع الفرق في الجدول، ويتحقق من النتائج، ويعالج النزاعات.' },
+    { name: 'مشرف', color: 'purple' as const, desc: 'يحافظ على نظافة السيرفر وانطلاق اللوبيات في وقتها.' },
+    { name: 'معلّق', color: 'white' as const, desc: 'يبثّ النهائيات ويقدّم تحليل ما بعد المباراة.' },
+    { name: 'متنافس', color: 'purple' as const, desc: 'أي لاعب مسجّل في فريق ضمن كأس نشط.' },
   ],
 }
 

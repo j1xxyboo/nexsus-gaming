@@ -5,7 +5,7 @@ import StatusChip from './StatusChip'
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[11px] font-medium uppercase tracking-wide text-slate-500">{label}</dt>
+      <dt className="text-[11px] font-medium text-slate-500">{label}</dt>
       <dd className="mt-0.5 text-sm font-medium text-white">{value}</dd>
     </div>
   )
@@ -32,9 +32,9 @@ export default function TournamentCard({ t }: { t: Tournament }) {
       {t.summary && <p className="muted mt-2 line-clamp-2">{t.summary}</p>}
 
       <dl className="mt-5 grid grid-cols-3 gap-4 border-t border-white/[0.08] pt-4">
-        <Meta label="Prize" value={t.prize_pool ?? 'TBA'} />
-        <Meta label="Entry" value={t.entry_fee ?? 'Free'} />
-        <Meta label="Squads" value={`${registered}/${t.max_teams}`} />
+        <Meta label="الجائزة" value={t.prize_pool ?? 'يُعلن لاحقاً'} />
+        <Meta label="رسوم الدخول" value={t.entry_fee ?? 'مجاني'} />
+        <Meta label="الفرق" value={`${registered}/${t.max_teams}`} />
       </dl>
 
       <div className="mt-auto pt-4">
@@ -45,7 +45,7 @@ export default function TournamentCard({ t }: { t: Tournament }) {
           />
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          {full ? 'Bracket full' : `${t.max_teams - registered} slots left`}
+          {full ? 'الجدول مكتمل' : `متبقٍ ${t.max_teams - registered} مقعد`}
           {t.discord_channel ? ` · #${t.discord_channel}` : ''}
         </p>
       </div>
