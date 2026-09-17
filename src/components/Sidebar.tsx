@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { site } from '../data/site'
+import { useAuth } from '../lib/auth'
 import Logo from './Logo'
 
 type Item = { to: string; channel: string; end?: boolean }
@@ -17,7 +18,7 @@ const groups: { title: string; items: Item[] }[] = [
     title: 'Competition',
     items: [
       { to: '/tournaments', channel: 'tournaments' },
-      { to: '/teams', channel: 'teams' },
+      { to: '/teams', channel: 'squads' },
     ],
   },
   {
@@ -64,24 +65,47 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-function Presence() {
+function Presence({ onNavigate }: { onNavigate?: () => void }) {
+  const { profile, session } = useAuth()
+  const name = profile?.ign ?? profile?.display_name ?? 'Guest'
+  const initials = name.slice(0, 2).toUpperCase()
+
   return (
     <div className="card mt-6 p-3">
       <div className="flex items-center gap-3">
         <div className="relative">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">
-            NX
-          </div>
-          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 animate-pulseDot rounded-full border-2 border-ink-900 bg-emerald-400" />
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
+          ) : (
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">
+              {initials}
+            </div>
+          )}
+          <span
+            className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-ink-900 ${
+              session ? 'animate-pulseDot bg-emerald-400' : 'bg-slate-600'
+            }`}
+          />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">Guest</p>
+          <p className="truncate text-sm font-semibold text-white">{name}</p>
           <p className="truncate text-xs text-slate-400">
-            {site.discord.online.toLocaleString()} online
+            {profile?.mlbb_verified ? 'MLBB verified' : session ? 'Not verified' : 'Not signed in'}
           </p>
         </div>
       </div>
-      <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-primary mt-3 w-full">
+
+      {session ? (
+        <NavLink to="/profile" onClick={onNavigate} className="btn-ghost mt-3 w-full">
+          My profile
+        </NavLink>
+      ) : (
+        <NavLink to="/auth" onClick={onNavigate} className="btn-primary mt-3 w-full">
+          Sign in
+        </NavLink>
+      )}
+
+      <a href={site.discordInvite} target="_blank" rel="noreferrer" className="btn-red mt-2 w-full">
         Join the server
       </a>
     </div>
@@ -90,10 +114,10 @@ function Presence() {
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
+  const close = () => setOpen(false)
 
   return (
     <>
-      {/* mobile trigger */}
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -106,10 +130,7 @@ export default function Sidebar() {
       </button>
 
       {open && (
-        <div
-          className="fixed inset-0 z-40 bg-ink-950/80 backdrop-blur-sm lg:hidden"
-          onClick={() => setOpen(false)}
-        />
+        <div className="fixed inset-0 z-40 bg-ink-950/80 backdrop-blur-sm lg:hidden" onClick={close} />
       )}
 
       <aside
@@ -118,7 +139,7 @@ export default function Sidebar() {
         }`}
       >
         <div className="flex items-center justify-between">
-          <NavLink to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
+          <NavLink to="/" onClick={close} className="flex items-center gap-2.5">
             <Logo className="h-9 w-9" />
             <div className="leading-tight">
               <p className="font-display text-xl tracking-wider text-white">NEXSUS</p>
@@ -127,7 +148,7 @@ export default function Sidebar() {
           </NavLink>
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={close}
             className="rounded-lg px-2 py-1 text-slate-400 hover:bg-white/10 lg:hidden"
             aria-label="Close navigation"
           >
@@ -137,11 +158,11 @@ export default function Sidebar() {
 
         <div className="mt-5 h-px bg-gradient-to-r from-brand-600/60 via-crimson-600/40 to-transparent" />
 
-        <div className="mt-5 max-h-[calc(100vh-15rem)] overflow-y-auto pr-1">
-          <Nav onNavigate={() => setOpen(false)} />
+        <div className="mt-5 max-h-[calc(100vh-19rem)] overflow-y-auto pr-1">
+          <Nav onNavigate={close} />
         </div>
 
-        <Presence />
+        <Presence onNavigate={close} />
       </aside>
     </>
   )
