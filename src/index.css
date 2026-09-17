@@ -12,78 +12,74 @@
     height: 100%;
   }
   body {
-    @apply bg-ink-950 text-slate-100 antialiased;
-    background-image:
-      radial-gradient(900px 500px at 12% -10%, rgba(124, 58, 237, 0.22), transparent 60%),
-      radial-gradient(700px 420px at 92% 0%, rgba(220, 38, 38, 0.16), transparent 60%);
-    background-attachment: fixed;
+    @apply bg-ink-950 text-slate-200 antialiased;
   }
   ::selection {
-    @apply bg-brand-600/60 text-white;
+    @apply bg-brand-500/40 text-white;
   }
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
     @apply bg-ink-950;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-brand-800/70 rounded-full;
+    @apply rounded-full bg-ink-700;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-white/10 bg-ink-900/70 backdrop-blur-sm;
+    @apply rounded-lg border border-white/[0.08] bg-ink-900;
   }
   .card-hover {
-    @apply transition hover:border-brand-500/60 hover:shadow-glow;
+    @apply transition-colors hover:border-white/20;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-400/60;
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-500 shadow-glow;
+    @apply btn bg-brand-500 text-white hover:bg-brand-400;
   }
   .btn-red {
-    @apply btn bg-crimson-600 text-white hover:bg-crimson-500 shadow-red;
+    @apply btn bg-crimson-600 text-white hover:bg-crimson-500;
   }
   .btn-white {
-    @apply btn bg-white text-ink-900 hover:bg-slate-200;
+    @apply btn bg-white text-ink-950 hover:bg-slate-200;
   }
   .btn-ghost {
-    @apply btn border border-white/15 bg-white/5 text-slate-200 hover:bg-white/10;
+    @apply btn border border-white/10 bg-transparent text-slate-200 hover:bg-white/5;
   }
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300;
+    @apply inline-flex items-center gap-1.5 rounded border border-white/10 px-2 py-0.5 text-[11px] font-medium text-slate-400;
   }
   .chip-purple {
-    @apply chip border-brand-500/40 bg-brand-600/20 text-brand-100;
+    @apply chip border-brand-500/30 text-brand-300;
   }
   .chip-red {
-    @apply chip border-crimson-500/40 bg-crimson-600/20 text-crimson-400;
+    @apply chip border-crimson-500/30 text-crimson-400;
   }
   .chip-white {
-    @apply chip border-white/30 bg-white/90 text-ink-900;
+    @apply chip border-white/30 text-white;
   }
   .nav-link {
-    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-slate-100;
+    @apply rounded-md px-3 py-1.5 text-sm text-slate-400 transition-colors hover:text-white;
   }
   .nav-link-active {
-    @apply bg-brand-600/25 text-white shadow-[inset_3px_0_0_0_theme(colors.crimson.500)];
+    @apply text-white;
   }
   .field {
-    @apply w-full rounded-xl border border-white/10 bg-ink-950/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+    @apply w-full rounded-md border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-brand-400 focus:outline-none;
   }
   .label {
-    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400;
+    @apply mb-1.5 block text-xs font-medium text-slate-400;
   }
   .h1 {
-    @apply font-display text-4xl tracking-wide text-white sm:text-5xl;
+    @apply font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl;
   }
   .h2 {
-    @apply font-display text-2xl tracking-wide text-white sm:text-3xl;
+    @apply font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl;
   }
   .muted {
     @apply text-sm leading-relaxed text-slate-400;

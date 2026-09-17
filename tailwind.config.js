@@ -4,7 +4,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Nexsus purple
         brand: {
           50: '#f5f2ff',
           100: '#ebe4ff',
@@ -17,28 +16,26 @@ export default {
           800: '#54189f',
           900: '#3b0f73',
         },
-        // Nexsus red accent
         crimson: {
           400: '#f87171',
           500: '#ef4444',
           600: '#dc2626',
           700: '#b91c1c',
         },
-        // dark chrome, Discord-ish
         ink: {
-          700: '#2b2340',
-          800: '#1e1830',
-          900: '#150f24',
-          950: '#0d0918',
+          700: '#26262f',
+          800: '#18181f',
+          900: '#111116',
+          950: '#0a0a0e',
         },
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['"Bebas Neue"', 'Inter', 'sans-serif'],
+        display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        glow: '0 0 0 1px rgba(139,92,246,.35), 0 12px 40px -12px rgba(124,58,237,.55)',
-        red: '0 0 0 1px rgba(239,68,68,.35), 0 12px 40px -12px rgba(220,38,38,.5)',
+        glow: '0 0 0 1px rgba(139,92,246,.25)',
+        red: '0 0 0 1px rgba(239,68,68,.25)',
       },
       keyframes: {
         pulseDot: {
