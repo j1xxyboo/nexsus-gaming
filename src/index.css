@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ink-950 text-slate-100 antialiased;
+    background-image:
+      radial-gradient(900px 500px at 12% -10%, rgba(124, 58, 237, 0.22), transparent 60%),
+      radial-gradient(700px 420px at 92% 0%, rgba(220, 38, 38, 0.16), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-brand-600/60 text-white;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-ink-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-800/70 rounded-full;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-ink-900/70 backdrop-blur-sm;
+  }
+  .card-hover {
+    @apply transition hover:border-brand-500/60 hover:shadow-glow;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-400/60;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-500 shadow-glow;
+  }
+  .btn-red {
+    @apply btn bg-crimson-600 text-white hover:bg-crimson-500 shadow-red;
+  }
+  .btn-white {
+    @apply btn bg-white text-ink-900 hover:bg-slate-200;
+  }
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/5 text-slate-200 hover:bg-white/10;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300;
+  }
+  .chip-purple {
+    @apply chip border-brand-500/40 bg-brand-600/20 text-brand-100;
+  }
+  .chip-red {
+    @apply chip border-crimson-500/40 bg-crimson-600/20 text-crimson-400;
+  }
+  .chip-white {
+    @apply chip border-white/30 bg-white/90 text-ink-900;
+  }
+  .nav-link {
+    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-slate-100;
+  }
+  .nav-link-active {
+    @apply bg-brand-600/25 text-white shadow-[inset_3px_0_0_0_theme(colors.crimson.500)];
+  }
+  .field {
+    @apply w-full rounded-xl border border-white/10 bg-ink-950/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400;
+  }
+  .h1 {
+    @apply font-display text-4xl tracking-wide text-white sm:text-5xl;
+  }
+  .h2 {
+    @apply font-display text-2xl tracking-wide text-white sm:text-3xl;
+  }
+  .muted {
+    @apply text-sm leading-relaxed text-slate-400;
+  }
+}
